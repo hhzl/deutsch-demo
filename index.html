@@ -18,11 +18,11 @@
 
 <div id="learnWords2-area">
   <div id="question">
-      <audio id="audio_play" autoplay="">
+      <audio id="audio_play" autoplay>
      	  <source src="#" type="audio/mpeg">
      	  Your browser does not support the audio element.
      	</audio>
-     		<img src="media/symbols/listen.png" id="listen">
+     		<img src="media/symbols/listen.png" id=listen>
     </div>
   <div id="optionsForAnswers">
     <div class=optionRow>
@@ -37,12 +37,6 @@
 </div>
 <div id=message style="display:none;"></div>
 </article>
-
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
-}
-</script>
 
 <script src="js/LW.js"></script>
 <script src="js/LWutils.js"></script>
@@ -117,8 +111,9 @@ var LWgui = {
 	    },
 	    optionClick: function(clickedOption) {
 
-	    	var wordID = clickedOption.target.id;
+	    	var wordID = clickedOption.currentTarget.id;
 	    	var clickedWord = lw.db.getWord(wordID);
+        var myButton = document.getElementById(wordID);
         var correctButton = document.getElementById(questionObj._id);
 
         var correct = false;
@@ -128,22 +123,23 @@ var LWgui = {
           {
               correct = true;
 
-              clickedOption.target.classList.add("correct");
+              //clickedOption.currentTarget.classList.add("correct");
+              myButton.classList.add("correct");
               lw.moveQuestionForward();
           }
           else {
               correctButton.classList.add("showCorrect");
-              clickedOption.target.classList.add("wrong");
+              myButton.classList.add("wrong");
 
               lw.moveQuestionBackwards();
           }
           setTimeout(function(){
             if(correct)
             {
-                clickedOption.target.classList.remove("correct");
+                myButton.classList.remove("correct");
             }
             else {
-              clickedOption.target.classList.remove("wrong");
+              myButton.classList.remove("wrong");
               correctButton.classList.remove("showCorrect");
             }
             LWgui.showRepeat();
@@ -153,7 +149,7 @@ var LWgui = {
     listen : function()
     {
       LW.Utils.playAudio("data/sounds/" + questionObj['word']);
-      console.log(LW.Utils.playAudio("data/sounds/" + questionObj['word']));
+      console.log("data/sounds/" + questionObj['word']);
     },
 };
 

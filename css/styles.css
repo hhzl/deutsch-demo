@@ -13,6 +13,12 @@ article {height: 100%;}
   width: 100%;
   text-align: center;
 }
+#question {
+  height: 10%;
+}
+#listen {
+  height: 100%;
+}
 #optionsForAnswers {
   height: 90%;
   width: 100%;
