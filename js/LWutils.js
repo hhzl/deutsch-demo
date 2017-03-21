@@ -41,6 +41,7 @@ if(typeof(LW.Utils) == 'undefined' || LW.Utils == null || !LW.Utils){
 			{
 				my_media = new Audio(src);
 			}
+			
 			my_media.play();
 		},
         delay: 0     //    Utils.delay = 24h * 60m * 60s * 100μs
