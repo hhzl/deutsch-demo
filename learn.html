@@ -17,11 +17,19 @@
 <article id="repeatScreen">
 
 <div id="learnWords2-area">
-  <div id="optionsForAnswers" style="display:table;">
-    <div id=back style="vertical-align: middle;height: 100%;display: table-cell; width:10%;"><button type="button" class="optionBtn" onclick="LWgui.backWord();"><</button></div>
-    <div style="display: table-cell;height:100%; width:80%;"><button id=displayWord type="button" class="optionBtn" onclick="LWgui.listen();"></button></div>
-    <div id=forward style="vertical-align: middle;height: 100%;display: table-cell; width:10%;"><button type="button" class="optionBtn" onclick="LWgui.nextWord();">></button></div>
+  <div id="optionsForAnswers">
+      <div class="optionRow Learn">
+        <div class="optionCell left"><button type="button" class="optionBtn"></button></div>
+        <div class="optionCell right"><button type="button" class="optionBtn"></button></div>
+      </div>
+      <div class="optionRow Learn">
+        <div class="optionCell left"><button type="button" class=optionBtn></button></div>
+        <div class="optionCell right"><button type="button" class="optionBtn"></button></div>
+      </div>
+      <div id=back style="margin-left: 2%; float:left;"><button type="button" class="backforwardBtn" onclick="LWgui.back();"><</button></div>
+      <div id=forward style="margin-right: 2%; float:right;"><button type="button" class="backforwardBtn" onclick="LWgui.forward();">></button></div>
   </div>
+
 </div>
 <div id=message style="display:none;"></div>
 </article>
@@ -31,7 +39,7 @@
 <script src="js/jquery-3.1.1.min.js"></script>
 <script src="js/flowtype.js"></script>
 <script>
-var lw = LW.BoxOfQuestions(LW.LWdb('germanfamily'));
+var lw = LW.BoxOfQuestions(LW.LWdb('chineseAnimals'));
 var wordNumber = 1;
 
 var LWgui = {
@@ -42,6 +50,7 @@ var LWgui = {
         oReq.onload = this.reqListener;
         oReq.open("get", "data/json/german-demo.json", true);
         oReq.send();
+        this.bindEvents();
 	    },
 
       reqListener: function () {
@@ -51,48 +60,77 @@ var LWgui = {
         LWgui.showRepeat();
       },
 
+	   bindEvents: function() {
+
+         var isCordovaApp = !!window.cordova;
+	       if (navigator.device==undefined && !isCordovaApp) {// usage in a browser
+	             this.attachButtonEvents("click");
+	          } else { // usage in mobile device
+	             this.attachButtonEvents("touchend");
+	       };
+	    },
+
+	    attachButtonEvents : function(eventName) {
+	    	var options = document.querySelectorAll('.optionBtn');
+	    	for(var i=0;i<options.length;i++){
+	    	  options[i].addEventListener(eventName,this.listen,false);
+	    	}
+	    },
+
 	    showRepeat : function() {
 
-        if(wordNumber == lw.db.numberOfWords())
+		    	var arrOptionButtons = document.getElementsByClassName("optionBtn");
+		    	var arrOptions = lw.getAnswerOptions(arrOptionButtons.length);
+
+		    	for (var i = 0; i <  4; i++) {
+            var w = wordNumber + i;
+            var questionObj = lw.db.getWord(w);
+
+            if(questionObj != null)
+            {
+                  arrOptionButtons[i].style.visibility = "visible";
+  	    		      arrOptionButtons[i].innerHTML = '<img class=imgAnswer src="data/pictures/' + questionObj.translate + '">'; //arrOptions[i]['translate'];
+  	    		      arrOptionButtons[i].id = questionObj._id;
+            }
+            else {
+              arrOptionButtons[i].style.visibility = "hidden";
+            }
+          }
+        var nextButton = document.getElementById("forward");
+
+        if((wordNumber + 4) >= lw.db.numberOfWords())
         {
-          var nextButton = document.getElementById("forward");
           nextButton.style.visibility = 'hidden';
         }
         else {
-          var nextButton = document.getElementById("forward");
           nextButton.style.visibility = 'visible';
         }
-        var questionObj = lw.db.getWord(wordNumber);
-        console.log(questionObj.translate);
-        var displayWord = document.getElementById("displayWord");
-        displayWord.innerHTML = '<img class=imgAnswer src="data/pictures/' + questionObj.translate + '">';
-
-        var questionObj = lw.db.getWord(wordNumber);
-        LW.Utils.playAudio("data/sounds/" + questionObj.word);
 
 	    },
-      backWord : function() {
+      back : function() {
 
         if(wordNumber > 1){
-          wordNumber--
+          wordNumber = wordNumber - 4;
           this.showRepeat();
         }
         else {
           window.location.href = "index.html";
         }
       },
-      nextWord : function() {
+      forward : function() {
 
         if(wordNumber < lw.db.numberOfWords()){
-          wordNumber++
+          wordNumber = wordNumber + 4;
           this.showRepeat();
         }
       },
-    listen : function()
+
+    listen : function(clickedOption)
     {
-      var questionObj = lw.db.getWord(wordNumber);
-      LW.Utils.playAudio("data/sounds/" + questionObj.word);
-      console.log("data/sounds/" + questionObj.word);
+      var wordID = clickedOption.currentTarget.id;
+      var clickedWord = lw.db.getWord(wordID);
+      LW.Utils.playAudio("data/sounds/" + clickedWord.word);
+      console.log("data/sounds/" + clickedWord.word);
     },
 };
 
