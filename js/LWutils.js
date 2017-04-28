@@ -36,12 +36,14 @@ if(typeof(LW.Utils) == 'undefined' || LW.Utils == null || !LW.Utils){
 			if(isCordovaApp)
 			{
 				my_media = new Media(cordova.file.applicationDirectory + "www/" + src);
+				console.log(cordova.file.applicationDirectory + "www/" + src);
 			}
 			else
 			{
 				my_media = new Audio(src);
+				console.log(src);
 			}
-			
+
 			my_media.play();
 		},
         delay: 0     //    Utils.delay = 24h * 60m * 60s * 100μs

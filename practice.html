@@ -5,6 +5,7 @@
 	<title>German Vocabulary - version 1</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
   	<link href="css/styles.css" rel="stylesheet">
+      <script type="text/javascript" src="cordova.js"></script>
 	<script type="text/javascript">
 	window.onerror = function(errorMsg, url, lineNumber) {
 	  "use strict";
@@ -94,6 +95,7 @@ var LWgui = {
 		    	for (var i = 0; i < arrOptionButtons.length; i++) {
 		    		arrOptionButtons[i].innerHTML = '<img class=imgAnswer src="data/pictures/' + arrOptions[i]['translate'] + '">'; //arrOptions[i]['translate'];
 		    		arrOptionButtons[i].id = arrOptions[i]['_id'];
+            arrOptionButtons[i].style.opacity = "1";
 		    	}
 
 	    	}
@@ -123,12 +125,10 @@ var LWgui = {
           {
               correct = true;
 
-              //clickedOption.currentTarget.classList.add("correct");
               myButton.classList.add("correct");
               lw.moveQuestionForward();
           }
           else {
-              correctButton.classList.add("showCorrect");
               myButton.classList.add("wrong");
 
               lw.moveQuestionBackwards();
@@ -137,12 +137,12 @@ var LWgui = {
             if(correct)
             {
                 myButton.classList.remove("correct");
+                LWgui.showRepeat();
             }
             else {
               myButton.classList.remove("wrong");
-              correctButton.classList.remove("showCorrect");
+              myButton.style.opacity = "0.3";
             }
-            LWgui.showRepeat();
           }, 3000);
         }
     },
